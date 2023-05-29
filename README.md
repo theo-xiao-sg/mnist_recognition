@@ -1,4 +1,4 @@
-# mnist_recognition
+# Recognition of the MNIST dataset
 
  digits (mnist datasets) recognition using python based KNN and neural network algorithm
  
