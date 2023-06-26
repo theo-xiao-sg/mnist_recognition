@@ -5,22 +5,33 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
 import time
 import joblib
+from keras.datasets import fashion_mnist
+from numpy.random import seed
+seed(1)
 
+image_size = 28
 
-# load mnist data, toy dataset for image recognition
-data = numpy.load('mnist.npz')
-# 60000 training images
-x_train = data['x_train']
-y_train = data['y_train']
-# 10000 testing images
-x_test = data['x_test']
-y_test = data['y_test']
+# load image dataset
+def get_data_my_images():
+    (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+    # reshape the data to 1*784
+    x_train = x_train.reshape(x_train.shape[0], image_size*image_size)
+    x_test = x_test.reshape(x_test.shape[0], image_size*image_size)
+
+    x_train = x_train.astype('float32')
+    x_test = x_test.astype('float32')
+    x_train = x_train/255
+    x_test = x_test/255
+
+    return x_train, x_test, y_train, y_test
+
+x_train, x_test, y_train, y_test = get_data_my_images()
 
 # tried different values of number_of_neurons for one hidden layer
 # save number_of_neurons and accuracy in a dictionary
 result = {}
-# number_of_neurons_list = [10, 50, 100, 200, 300, 400, 500, 600, 700]
-number_of_neurons_list = [200]
+number_of_neurons_list = [100, 300, 500, 700, 900]
+# number_of_neurons_list = [200]
 
 for number_of_neurons_i in number_of_neurons_list:
     # create MLP model for one hidden layer
@@ -39,5 +50,3 @@ for number_of_neurons_i in number_of_neurons_list:
           'accuracy: {:.2%}'.format(number_of_neurons_i, accuracy_i))
     print('\n')
 
-# save model
-joblib.dump(model,"neuralnetwork_minst.pkl")
